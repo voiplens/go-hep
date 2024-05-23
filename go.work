@@ -1,0 +1,7 @@
+go 1.22
+
+use (
+	.
+	./encoding/protobuf/proto2
+	./encoding/protobuf/proto3
+)

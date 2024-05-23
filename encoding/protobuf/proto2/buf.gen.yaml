@@ -1,0 +1,12 @@
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: go.voiplens.io/hep/encoding/protobuf/proto2/
+    except:
+      - buf.build/cosmos/gogo-proto
+plugins:
+  - name: gogoslick
+    out: .
+    opt:
+      - paths=source_relative

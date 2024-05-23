@@ -1,0 +1,21 @@
+syntax = "proto3";
+package hep.encoding.protobuf.v3;
+
+// HEP represents HEP packet
+message HEP {
+  uint32 version = 1;
+  uint32 protocol = 2;
+  string src_ip = 3;
+  string dst_ip = 4;
+  uint32 src_port = 5;
+  uint32 dst_port = 6;
+  uint32 tsec = 7;
+  uint32 tmsec = 8;
+  uint32 proto_type = 9;
+  uint32 node_id = 10;
+  string node_pw = 11;
+  bytes payload = 12;
+  bytes c_id = 13;
+  uint32 vlan = 14;
+  string node_name = 15;
+}

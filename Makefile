@@ -31,8 +31,8 @@ install-generators: ## install protobuf generation tools.
 	go install github.com/bufbuild/buf/cmd/buf@$(BUF_VERSION)
 
 generate-proto: ## re-generate all protos.
+	@cd $(CURDIR)/encoding/protobuf/proto2 && buf generate
 	@cd $(CURDIR)/encoding/protobuf/proto3 && buf generate
-	@cd $(CURDIR)/encoding/protobuf/legacy && buf generate
 
 ################################################################################
 # Help target
