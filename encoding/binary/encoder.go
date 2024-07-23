@@ -51,6 +51,11 @@ func (b *binaryEncoder) Encode(msg *hep.Message) (data []byte, err error) {
 
 	offset += copy(data[offset:], []byte{0x00, 0x00, 0x00, 0x07, 0x00, 0x08, byte(msg.SrcPort >> 8), byte(msg.SrcPort)})
 	offset += copy(data[offset:], []byte{0x00, 0x00, 0x00, 0x08, 0x00, 0x08, byte(msg.DstPort >> 8), byte(msg.DstPort)})
+	if !msg.Timestamp.IsZero() && msg.Tsec == 0 && msg.Tmsec == 0 {
+		nano := msg.Timestamp.UnixNano()
+		msg.Tsec = uint32(nano / 1e9)
+		msg.Tmsec = uint32((nano % 1e9) / 1000)
+	}
 	offset += copy(data[offset:], []byte{0x00, 0x00, 0x00, 0x09, 0x00, 0x0a, byte(msg.Tsec >> 24), byte(msg.Tsec >> 16), byte(msg.Tsec >> 8), byte(msg.Tsec)})
 	offset += copy(data[offset:], []byte{0x00, 0x00, 0x00, 0x0a, 0x00, 0x0a, byte(msg.Tmsec >> 24), byte(msg.Tmsec >> 16), byte(msg.Tmsec >> 8), byte(msg.Tmsec)})
 	offset += copy(data[offset:], []byte{0x00, 0x00, 0x00, 0x0b, 0x00, 0x07, msg.ProtoType})

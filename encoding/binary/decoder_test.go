@@ -1,11 +1,14 @@
 package binary
 
 import (
+	"fmt"
 	"net"
 	"slices"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
+	"go.voiplens.io/hep"
 )
 
 var sipPayload = []byte{
@@ -279,6 +282,49 @@ func TestDecode(t *testing.T) {
 	assert.Equal(t, uint16(5060), hepMsg.SrcPort)
 	assert.Equal(t, uint16(5060), hepMsg.DstPort)
 	assert.Equal(t, sipPayload, hepMsg.Payload)
+}
+
+func TestTimestampDecode(t *testing.T) {
+	encoder := NewBinaryEncoder()
+	decoder := NewBinaryDecoder()
+	timestamp := time.Unix(0, time.Now().UnixNano())
+	message := &hep.Message{
+		Timestamp: timestamp,
+	}
+	hepPacket, err := encoder.Encode(message)
+	assert.NoError(t, err)
+	hepMsg, err := decoder.Decode(hepPacket)
+	assert.Equal(t, timestamp, hepMsg.Timestamp)
+
+	message = &hep.Message{
+		Timestamp: timestamp,
+		Tsec:      uint32(1721701731),
+		Tmsec:     uint32(0),
+	}
+	hepPacket, err = encoder.Encode(message)
+	fmt.Println(hepPacket)
+	assert.NoError(t, err)
+	hepMsg, err = decoder.Decode(hepPacket)
+	timestamp = time.Unix(1721701731, 0)
+	assert.Equal(t, timestamp, hepMsg.Timestamp)
+
+	message = &hep.Message{
+		Tsec: uint32(1721701731),
+	}
+	hepPacket, err = encoder.Encode(message)
+	assert.NoError(t, err)
+	hepMsg, err = decoder.Decode(hepPacket)
+	timestamp = time.Unix(1721701731, 0)
+	assert.Equal(t, timestamp, hepMsg.Timestamp)
+
+	message = &hep.Message{
+		Tmsec: uint32(58647),
+	}
+	hepPacket, err = encoder.Encode(message)
+	assert.NoError(t, err)
+	hepMsg, err = decoder.Decode(hepPacket)
+	timestamp = time.Unix(0, 58647000)
+	assert.Equal(t, timestamp, hepMsg.Timestamp)
 }
 
 func BenchmarkDecode(b *testing.B) {

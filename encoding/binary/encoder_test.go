@@ -3,6 +3,7 @@ package binary
 import (
 	"net"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 
@@ -108,9 +109,27 @@ func TestEncode(t *testing.T) {
 	}
 
 	// Test case 1: Valid HEP packet
-	hep, err := encoder.Encode(hepMsg)
-	assert.NoError(t, err)
-	assert.Equal(t, validPacket, hep)
+	t.Run("Valid HEP packet", func(t *testing.T) {
+		hepPacket, err := encoder.Encode(hepMsg)
+		assert.NoError(t, err)
+		assert.Equal(t, validPacket, hepPacket)
+	})
+	// Test case 2: Set Timestamp and check if Tsec and Tmsec takes precedence
+	t.Run("Tsec and Tmsec precedence", func(t *testing.T) {
+		hepMsg.Timestamp = time.Unix(1234, 1234)
+		hepPacket, err := encoder.Encode(hepMsg)
+		assert.NoError(t, err)
+		assert.Equal(t, validPacket, hepPacket)
+	})
+	// Test case 3: Valid Timestamp conversion
+	t.Run("Timestamp conversion", func(t *testing.T) {
+		hepMsg.Timestamp = time.Unix(1712018425, 119540000)
+		hepMsg.Tsec = 0
+		hepMsg.Tmsec = 0
+		hepPacket, err := encoder.Encode(hepMsg)
+		assert.NoError(t, err)
+		assert.Equal(t, validPacket, hepPacket)
+	})
 }
 
 func BenchmarkEncode(b *testing.B) {

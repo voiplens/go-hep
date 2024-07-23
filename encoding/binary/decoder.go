@@ -3,6 +3,7 @@ package binary
 import (
 	"encoding/binary"
 	"fmt"
+	"time"
 
 	"go.voiplens.io/hep"
 )
@@ -79,5 +80,6 @@ func (b *binaryDecoder) Decode(data []byte) (*hep.Message, error) {
 			return nil, err
 		}
 	}
+	msg.Timestamp = time.Unix(int64(msg.Tsec), int64(msg.Tmsec*1000))
 	return msg, nil
 }
