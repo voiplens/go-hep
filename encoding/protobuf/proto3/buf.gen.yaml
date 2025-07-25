@@ -4,7 +4,7 @@ managed:
   go_package_prefix:
     default: go.voiplens.io/hep/encoding/protobuf/v3/
 plugins:
-  - plugin: buf.build/protocolbuffers/go:v1.34.1
+  - plugin: buf.build/protocolbuffers/go:v1.36.6
     out: .
     opt:
       - paths=source_relative

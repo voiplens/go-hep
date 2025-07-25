@@ -1,5 +1,5 @@
-BUF_VERSION  := v1.31.0
-GOGO_VERSION := v1.4.12
+BUF_VERSION  := v1.55.1
+GOGO_VERSION := v1.7.0
 GOLANGCI_VERSION := v1.58.2
 
 default: help
